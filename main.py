@@ -5,7 +5,7 @@ import pandas as pd
 import keras
 from keras.utils import to_categorical, plot_model
 from keras_preprocessing.image import ImageDataGenerator
-from keras.models import Model
+from keras.models import Model, model_from_json
 from keras.layers import Input, Dense, Flatten, Dropout, BatchNormalization
 from keras.layers.convolutional import Conv2D
 from keras.layers.pooling import MaxPooling2D
@@ -14,6 +14,7 @@ from keras.optimizers import Adam, SGD
 from keras.regularizers import l1, l2
 from matplotlib import pyplot as plt
 from sklearn.metrics import confusion_matrix
+import cv2
 
 df = pd.read_csv('../input/fer2013/fer2013/fer2013.csv')
 df.head()
@@ -30,7 +31,7 @@ for index, row in df.iterrows():
         y_train.append(row['emotion'])
     elif row['Usage'] == 'PublicTest':
         x_test.append(np.array(k))
-        y_train.append(row['emotion'])
+        y_test.append(row['emotion'])
 
 x_train = np.array(x_train, dtype='uint8')
 y_train = np.array(y_train, dtype='uint8')
@@ -40,8 +41,8 @@ y_test = np.array(y_test, dtype='uint8')
 y_train = to_categorical(y_train, num_classes=7)
 y_test = to_categorical(y_test, num_classes=7)
 
-x_train = x_train.reshape(x_train.shape[0], 48)
-x_test = x_test.reshape(x_test.shape[0], 48)
+x_train = x_train.reshape((x_train.shape[0], 48, 48, 1))
+x_test = x_test.reshape((x_test.shape[0], 48, 48, 1))
 
 datagen = ImageDataGenerator(
     rescale=1. / 255,
@@ -119,20 +120,20 @@ def fer_model(input_shape=(48, 48, 1)):
 
 
 model = fer_model()
-opt = Adam(lr=0.0001, decay=1e-6)
+opt = Adam(learning_rate=0.0001, decay=1e-6)
 model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
 num_epochs = 100
-history = model.fit_generator(train_flow,
-                              steps_per_epoch=len(x_train) / batch_size,
-                              epochs=num_epochs,
-                              verbose=1,
-                              validation_data=test_flow)
+history = model.fit(train_flow,
+                    steps_per_epoch=len(x_train) / batch_size,
+                    epochs=num_epochs,
+                    verbose=1,
+                    validation_data=test_flow)
 
 model_json = model.to_json()
 with open("model.json", "w") as json_file:
     json_file.write(model_json)
 model.save_weights("face_recognition_model.h5")
-print("Saved model to disk")
+print("Saved model")
 
 # Continue ...
