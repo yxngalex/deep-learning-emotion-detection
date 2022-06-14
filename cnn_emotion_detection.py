@@ -45,6 +45,7 @@ y_test = to_categorical(y_test, num_classes=7)
 x_train = x_train.reshape((x_train.shape[0], 48, 48, 1))
 x_test = x_test.reshape((x_test.shape[0], 48, 48, 1))
 
+# Image Augmentation for FER
 datagen = ImageDataGenerator(
     rescale=1. / 255,
     rotation_range=10,
@@ -65,8 +66,11 @@ test_flow = datagen.flow(x_test, y_test, batch_size=batch_size)
 
 
 def fer_model(input_shape=(48, 48, 1)):
+    # First input model
     visible = Input(shape=input_shape, name='input')
     num_classes = 7
+
+    # Block 1
     conv1_1 = Conv2D(64, kernel_size=3, activation='relu', padding='same', name='conv1_1')(visible)
     conv1_1 = BatchNormalization()(conv1_1)
     conv1_2 = Conv2D(64, kernel_size=3, activation='relu', padding='same', name='conv1_2')(conv1_1)
@@ -101,6 +105,8 @@ def fer_model(input_shape=(48, 48, 1)):
     conv4_4 = BatchNormalization()(conv4_4)
     pool4_1 = MaxPooling2D(pool_size=(2, 2), name='pool4_1')(conv4_4)
     drop4_1 = Dropout(0.3, name='drop4_1')(pool4_1)
+
+    # Block 5
     conv5_1 = Conv2D(512, kernel_size=3, activation='relu', padding='same', name='conv5_1')(drop4_1)
     conv5_1 = BatchNormalization()(conv5_1)
     conv5_2 = Conv2D(512, kernel_size=3, activation='relu', padding='same', name='conv5_2')(conv5_1)
@@ -115,6 +121,7 @@ def fer_model(input_shape=(48, 48, 1)):
     ouput = Dense(num_classes, activation='softmax', name='output')(flatten)
     model = Model(inputs=visible, outputs=ouput)
 
+    # Summary
     print(model.summary())
 
     return model
