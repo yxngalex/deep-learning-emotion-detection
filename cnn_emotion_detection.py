@@ -14,7 +14,6 @@ from keras.optimizers import Adam, SGD
 from keras.regularizers import l1, l2
 from matplotlib import pyplot as plt
 from sklearn.metrics import confusion_matrix
-import cv2
 
 df = pd.read_csv('../input/fer2013/fer2013/fer2013.csv')
 df.head()
