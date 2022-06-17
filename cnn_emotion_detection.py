@@ -1,19 +1,12 @@
-import matplotlib.pyplot as plt
 import numpy as np
-import scipy
 import pandas as pd
-import keras
-from keras.utils import to_categorical, plot_model
+from keras.utils import to_categorical
 from keras_preprocessing.image import ImageDataGenerator
-from keras.models import Model, model_from_json
+from keras.models import Model
 from keras.layers import Input, Dense, Flatten, Dropout, BatchNormalization
 from keras.layers.convolutional import Conv2D
 from keras.layers.pooling import MaxPooling2D
-from keras.layers.merging import concatenate
-from keras.optimizers import Adam, SGD
-from keras.regularizers import l1, l2
-from matplotlib import pyplot as plt
-from sklearn.metrics import confusion_matrix
+from keras.optimizers import Adam
 
 df = pd.read_csv('../input/fer2013/fer2013/fer2013.csv')
 df.head()
