@@ -20,7 +20,7 @@ you can install all these packages using:
 
 ## Conclusion
 
-This app was a first look, an introduction to artificial intelligence and it's most popular
+This app was a first look, an introduction, to artificial intelligence and it's most popular
 methods such as deep learning and machine learning.
 While working on this project I learned about CNN and how we use it to detect emotion through images and videos.
 I also learned about data training, overfitting and underfitting.
