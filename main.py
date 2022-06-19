@@ -12,17 +12,17 @@ face_haar_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
 camera = cv2.VideoCapture(0)
 
-emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Surprise', 'Sad']
+emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
 while True:
-    _, frame = camera.read()
+    res, frame = camera.read()
     labels = []
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_haar_cascade.detectMultiScale(gray)
+    gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = face_haar_cascade.detectMultiScale(gray_image)
 
     for (x, y, w, h) in faces:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
-        roi_gray = gray[y:y + h, x:x + w]
+        roi_gray = gray_image[y:y + h, x:x + w]
         roi_gray = cv2.resize(roi_gray, (48, 48), interpolation=cv2.INTER_AREA)
 
         if np.sum([roi_gray]) != 0:
